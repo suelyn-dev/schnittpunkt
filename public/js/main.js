@@ -1,6 +1,6 @@
-async function ladeMitarbeiter() {
+async function ladeMitarbeiterTest() {
   try {
-    const resp = await fetch("http://localhost:8080/api/mitarbeiter")
+    const resp = await fetch("http://localhost:8080/api/mitarbeiter-test")
     const mitarbeiter = await resp.json()
 
     const mitarbeiterSection = document.getElementById("mitarbeiterC");
@@ -15,8 +15,8 @@ async function ladeMitarbeiter() {
         
         <div class="ma-info">
           <h2>${ma.vorname}</h2>
-          <span class="status">${ma.nachname || 'Hat keinen Nachnamen'}</span>
-          <p class="status"><strong>Verfügbar bei 1:</strong> ${ma.status_verfuegbar || 'Unbekannt'}</p>
+          <span class="status">${ma.nachname || ''}</span>
+          <p class="status"><strong>Verfügbarkeit:</strong> ${ma.status_verfuegbar || 'Unbekannt'}</p>
         </div>
       `;
 
@@ -27,7 +27,7 @@ async function ladeMitarbeiter() {
   }
 }
 
-ladeMitarbeiter()
+ladeMitarbeiterTest()
 
 async function ladeUebersicht() {
   try {

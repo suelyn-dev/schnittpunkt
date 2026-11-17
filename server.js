@@ -3,7 +3,7 @@ import cookieParser from 'cookie-parser'
 import 'dotenv/config'
 import { pool } from './src/utilities/db.js'
 
-
+import {router as testrouter} from './src/routes/mitarbeiterTestRoute.js'
 const PORT = process.env.PORT || 8080
 const app = express()
 
@@ -15,19 +15,8 @@ app.use(express.static("./public", {
 app.use(express.json()) 
 app.use(cookieParser()) 
 
-// Erste Verbindung zur Datenbank:
-app.get('/api/mitarbeiter', async (req, res) => {
-  try {
-    const [rows] = await pool.query('SELECT * FROM mitarbeiter')
-
-    console.log(rows);
-    res.json(rows);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
+//Testroute mit Schichtenarchitektur 
+app.use('/api/mitarbeiter-test', testrouter)
 
 app.get('/api/uebersicht', async (req, res) => {
   try {
