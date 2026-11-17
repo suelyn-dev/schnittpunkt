@@ -1,15 +1,15 @@
-const resp = await fetch("http://localhost:8080/api/mitarbeiter")
-const mitarbeiter = await resp.json()
+async function ladeMitarbeiter() {
+  try {
+    const resp = await fetch("http://localhost:8080/api/mitarbeiter")
+    const mitarbeiter = await resp.json()
 
-console.log(mitarbeiter);
-
-const mitarbeiterSection = document.getElementById("mitarbeiterC");
+    const mitarbeiterSection = document.getElementById("mitarbeiterC");
 
 
-mitarbeiter.forEach(ma => {
-      
+    mitarbeiter.forEach(ma => {
+
       const maCard = document.createElement("div");
-      maCard.className = "ma-card"; 
+      maCard.className = "ma-card";
 
       maCard.innerHTML = `
         
@@ -22,5 +22,35 @@ mitarbeiter.forEach(ma => {
 
       mitarbeiterSection.appendChild(maCard);
     });
+  } catch (error) {
+    console.error("Fehler beim Abrufen der Mitarbeiter:", error);
+  }
+}
 
+ladeMitarbeiter()
 
+async function ladeUebersicht() {
+  try {
+    const response = await fetch("http://localhost:8080/api/uebersicht");
+    const uebersicht = await response.json();
+
+    const tbody = document.getElementById("uebersicht")
+    tbody.innerHTML = "";
+
+    uebersicht.forEach(item => {
+      const row = document.createElement("tr");
+
+      row.innerHTML = `
+            <td>${item.LEISTUNG}</td>
+            <td>${item.DAUER}</td>
+            <td>${item.PREIS}</td>
+            <td>${item.PERSONEN}</td>
+        `;
+
+      tbody.appendChild(row);
+    });
+  } catch (error) {
+    console.error("Fehler beim Abrufen der Mitarbeiter", error)
+  }
+}
+ladeUebersicht()
