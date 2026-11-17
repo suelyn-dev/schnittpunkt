@@ -12,8 +12,8 @@ app.use(express.static("./public", {
   extensions: ['html']
 }));
 
-app.use(express.json()) //damit Daten richtig umgewandelt werden
-app.use(cookieParser()) //damit Backend Cookies lesen kann, die der Browser bei einer Anfrage mitsendet
+app.use(express.json()) 
+app.use(cookieParser()) 
 
 // Erste Verbindung zur Datenbank:
 app.get('/api/mitarbeiter', async (req, res) => {
