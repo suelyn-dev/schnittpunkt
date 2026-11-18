@@ -1,0 +1,19 @@
+info:
+  name: testGetFreieSlots
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: http://localhost:8080/api/terminbuchung?leistungId=5
+  params:
+    - name: leistungId
+      value: "5"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
