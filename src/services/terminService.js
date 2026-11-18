@@ -26,9 +26,9 @@ export async function getFreieTermine(leistungId, mitarbeiterId) {
     );
   }
 
-/*   console.log('Aus dem Service Dauer:', dauer);
-  console.log('Aus dem Service mitarbeiterListe:', mitarbeiterListe);
-  console.log('Aus dem Service gebuchteTermine:', gebuchteTermine); */
+  /*   console.log('Aus dem Service Dauer:', dauer);
+    console.log('Aus dem Service mitarbeiterListe:', mitarbeiterListe);
+    console.log('Aus dem Service gebuchteTermine:', gebuchteTermine); */
 
   const ergebnis = [];
   const heute = new Date();
@@ -76,11 +76,10 @@ export async function getFreieTermine(leistungId, mitarbeiterId) {
           }
         }
 
-        if (istBelegt === false) {
-          freieSlots.push(
-            aktuell.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
-          );
-        }
+        let text = aktuell.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+        if (istBelegt) text += ' (belegt)';
+        freieSlots.push(text);
+
 
         // 15 Minuten weiter springen
         aktuell.setMinutes(aktuell.getMinutes() + 15);

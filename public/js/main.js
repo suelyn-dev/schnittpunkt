@@ -85,7 +85,8 @@ function zeigeUhrzeiten(termine, gewaehlterTag, mitarbeiterName) {
     t.freieSlots.forEach(uhrzeit => {
       const btn = document.createElement("button");
       btn.className = "t-button";
-      btn.textContent = `${uhrzeit} Uhr`;
+      btn.textContent = uhrzeit;
+      if (uhrzeit.includes("belegt")) btn.disabled = true;
       container.appendChild(btn);
     });
   });
