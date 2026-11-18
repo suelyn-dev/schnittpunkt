@@ -14,13 +14,21 @@ const OEFFNUNGSZEITEN = [
   { start: 9, ende: 14 }
 ];
 
-export async function getFreieTermine(leistungId) {
+export async function getFreieTermine(leistungId, mitarbeiterId) {
   const dauer = await findLeistungDauer(leistungId);
-  const mitarbeiterListe = await findPassendeMitarbeiter(leistungId);
+  let mitarbeiterListe = await findPassendeMitarbeiter(leistungId);
   const gebuchteTermine = await findGebuchteTermine();
-  console.log('Aus dem Service Dauer:', dauer);
+
+  // Wenn ein bestimmter Mitarbeiter gewählt wurde und (nicht "egal"), nur diesen behalten
+  if (mitarbeiterId && mitarbeiterId !== 'egal') {
+    mitarbeiterListe = mitarbeiterListe.filter(
+      (ma) => ma.mitarbeiter_id === Number(mitarbeiterId)
+    );
+  }
+
+/*   console.log('Aus dem Service Dauer:', dauer);
   console.log('Aus dem Service mitarbeiterListe:', mitarbeiterListe);
-  console.log('Aus dem Service gebuchteTermine:', gebuchteTermine);
+  console.log('Aus dem Service gebuchteTermine:', gebuchteTermine); */
 
   const ergebnis = [];
   const heute = new Date();

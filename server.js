@@ -28,7 +28,7 @@ app.use('/api/terminbuchung', terminRouter);
 app.get('/api/uebersicht', async (req, res) => {
   try {
     const [rows] = await pool.query(`
-      SELECT l.bezeichnung AS LEISTUNG,
+      SELECT l.leistung_id, l.bezeichnung AS LEISTUNG,
       CONCAT(l.dauer, ' Min') AS DAUER,
       CONCAT(REPLACE(l.preis, '.', ','), ' €') AS PREIS,
       GROUP_CONCAT(m.vorname ORDER BY m.mitarbeiter_id SEPARATOR ', ') AS  PERSONEN 

@@ -1,5 +1,5 @@
 info:
-  name: testGetFreieSlots
+  name: getFreieSlots
   type: http
   seq: 1
 

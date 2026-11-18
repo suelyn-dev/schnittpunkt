@@ -8,7 +8,7 @@ export async function findLeistungDauer(leistungId) {
     'SELECT dauer FROM leistung WHERE leistung_id = ?',
     [leistungId]
   );
-  /* console.log('1. Dauer aus DB:', rows[0].dauer); */
+  /* console.log('Dauer aus DB:', rows[0].dauer); */
   return rows[0].dauer;
 }
 
@@ -22,7 +22,7 @@ export async function findPassendeMitarbeiter(leistungId) {
        AND m.status_verfuegbar = 'verfügbar'`,
     [leistungId]
   );
-  /* console.log('2. Mitarbeiter aus DB:', rows); */
+  /* console.log('Mitarbeiter aus DB:', rows); */
   return rows;
 }
 
@@ -34,6 +34,6 @@ export async function findGebuchteTermine() {
      WHERE datum BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 3 MONTH)
        AND status != 'storniert'`
   );
-  /* console.log('3. Gebuchte Termine aus DB:', rows); */
+  /* console.log('Gebuchte Termine aus DB:', rows); */
   return rows;
 }
