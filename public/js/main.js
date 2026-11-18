@@ -86,10 +86,58 @@ function zeigeUhrzeiten(termine, gewaehlterTag, mitarbeiterName) {
       const btn = document.createElement("button");
       btn.className = "t-button";
       btn.textContent = uhrzeit;
-      if (uhrzeit.includes("belegt")) btn.disabled = true;
+      if (uhrzeit.includes("belegt")) {
+        btn.disabled = true;
+      } else {
+        // Klick auf freie Uhrzeit -> öffnet das vorausgefüllte Formular
+        btn.addEventListener("click", () => {
+          zeigeBuchungsformular(t.mitarbeiter, gewaehlterTag, uhrzeit);
+        });
+      }
       container.appendChild(btn);
     });
   });
 }
+
+// Buchungsformular anzeigen & vorausfüllen
+function zeigeBuchungsformular(mitarbeiterName, datum, uhrzeit) {
+  const container = document.getElementById("freeSlots");
+  container.innerHTML = "<h3>Termin buchen:</h3>";
+
+  const booking = document.createElement("form");
+
+  booking.innerHTML = `
+    <p>Mitarbeiter:<input type="text" name="mitarbeiter" value="${mitarbeiterName}" readonly></p>
+    <p> Datum:<input type="text" name="datum" value="${datum}" readonly></p>
+    <p>Uhrzeit:<input type="text" name="uhrzeit" value="${uhrzeit}" readonly></p>
+
+    <p>Vorname:<input type="text" name="vorname" placeholder="Vorname *" required></p>
+    <p>Nachname<input type="text" name="nachname" placeholder="Nachname *" required></p>
+    <p>Telefonnummer<input type="tel" name="telefon" placeholder="Telefonnummer *" required></p>
+    <p>E-Mail<input type="email" name="email" placeholder="E-Mail (optional)"></p>
+
+    <button type="submit" class="t-button">Verbindlich buchen</button>
+  `;
+
+  // Absenden abfangen (verhindert Neuladen der Seite)
+  booking.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const buchungsDaten = {
+      mitarbeiter: booking.mitarbeiter.value,
+      datum: booking.datum.value,
+      uhrzeit: booking.uhrzeit.value,
+      vorname: booking.vorname.value,
+      nachname: booking.nachname.value,
+      telefon: booking.telefon.value,
+      email: booking.email.value
+    };
+
+    console.log("Fertige Buchungsdaten:", buchungsDaten);
+  });
+
+  container.appendChild(booking);
+}
+
 
 ladeUebersicht();
