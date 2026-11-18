@@ -3,8 +3,6 @@ import cookieParser from 'cookie-parser'
 import 'dotenv/config'
 import { pool } from './src/utilities/db.js'
 
-import {router as testrouter} from './src/routes/mitarbeiterTestRoute.js'
-
 import { router as terminRouter } from './src/routes/terminRoute.js';
 
 const PORT = process.env.PORT || 8080
@@ -17,9 +15,6 @@ app.use(express.static("./public", {
 
 app.use(express.json()) 
 app.use(cookieParser()) 
-
-//Testroute mit Schichtenarchitektur 
-app.use('/api/mitarbeiter-test', testrouter)
 
 //Testroute freie Slots
 app.use('/api/terminbuchung', terminRouter);
