@@ -5,7 +5,7 @@ import { pool } from './src/utilities/db.js'
 
 import {router as testrouter} from './src/routes/mitarbeiterTestRoute.js'
 
-/* import { router as terminRouter } from './src/routes/testRoute.js'; */
+import { router as terminRouter } from './src/routes/terminRoute.js';
 
 const PORT = process.env.PORT || 8080
 const app = express()
@@ -22,8 +22,8 @@ app.use(cookieParser())
 app.use('/api/mitarbeiter-test', testrouter)
 
 //Testroute freie Slots
-/* app.use('/api/terminbuchung', terminRouter);
- */
+app.use('/api/terminbuchung', terminRouter);
+
 //Übersichts-Route klassisch ohne Architektur
 app.get('/api/uebersicht', async (req, res) => {
   try {

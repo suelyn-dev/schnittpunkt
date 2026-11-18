@@ -5,10 +5,10 @@ info:
 
 http:
   method: GET
-  url: http://localhost:8080/api/terminbuchung?leistungId=5
+  url: http://localhost:8080/api/terminbuchung?leistungId=1
   params:
     - name: leistungId
-      value: "5"
+      value: "1"
       type: query
   auth: inherit
 
