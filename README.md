@@ -49,9 +49,12 @@ Daraus wurde folgendes ER-Modell entwickelt:
 
 ```bash
 npm init -y
-npm install express mysql2 cors dotenv cookie-parser
+npm install express mysql2 cors dotenv cookie-parser bcrypt
 npm install -D nodemon
 ```
+
+**Verwendete Node.js Built-in-Module:**
+- `crypto` (für die Generierung der Storno-Tokens)
 
 **`package.json` anpassen:**
 ```json

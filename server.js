@@ -5,6 +5,7 @@ import { pool } from './src/utilities/db.js'
 
 import { router as terminRouter } from './src/routes/terminRoute.js';
 import { router as buchungsRouter } from './src/routes/buchungsRouter.js';
+import { router as authRouter } from "./authBackend.js";
 
 const PORT = process.env.PORT || 8080
 const app = express()
@@ -43,5 +44,7 @@ app.get('/api/uebersicht', async (req, res) => {
     }
   });
   
+//PasswortCheck
+app.use("/api/passwortcheck", authRouter);
   
 app.listen(PORT, () => console.log("Der Salon geht an den Start auf Port: ", PORT))
