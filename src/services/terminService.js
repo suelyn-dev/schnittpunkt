@@ -9,7 +9,7 @@ const OEFFNUNGSZEITEN = [
   null, // Montag
   { start: 9, ende: 18 },
   { start: 9, ende: 18 },
-  { start: 9, ende: 20 },
+  { start: 9, ende: 18 },
   { start: 9, ende: 18 },
   { start: 9, ende: 14 }
 ];
@@ -60,7 +60,11 @@ export async function getFreieTermine(leistungId, mitarbeiterId) {
         if (slotEnde > feierabend) {
           break;
         }
-
+        // Mindestens 2 Stunden Vorlaufzeit 
+        if (aktuell < new Date(Date.now() + 2 * 60 * 60 * 1000)) {
+          aktuell.setMinutes(aktuell.getMinutes() + 15);
+          continue;
+        }
         // Terminkollision prüfen
         let istBelegt = false;
 

@@ -6,6 +6,7 @@ import { pool } from './src/utilities/db.js'
 import { router as terminRouter } from './src/routes/terminRoute.js';
 import { router as buchungsRouter } from './src/routes/buchungsRouter.js';
 import { router as authRouter } from "./authBackend.js";
+import { router as mitarbeiterRouter } from "./src/routes/internRouter.js";
 
 const PORT = process.env.PORT || 8080
 const app = express()
@@ -20,7 +21,6 @@ app.use(cookieParser())
 
 //Testroute freie Slots
 app.use('/api/terminbuchung', terminRouter);
-
 app.use('/api/terminbuchung', buchungsRouter); 
 
 //Übersichts-Route klassisch ohne Architektur
@@ -46,5 +46,8 @@ app.get('/api/uebersicht', async (req, res) => {
   
 //PasswortCheck
 app.use("/api/passwortcheck", authRouter);
+
+//Mitarbeiterbereich
+app.use("/api/mitarbeiter", mitarbeiterRouter);
   
 app.listen(PORT, () => console.log("Der Salon geht an den Start auf Port: ", PORT))
