@@ -4,6 +4,7 @@ import 'dotenv/config'
 import { pool } from './src/utilities/db.js'
 
 import { router as terminRouter } from './src/routes/terminRoute.js';
+import { router as buchungsRouter } from './src/routes/buchungsRouter.js';
 
 const PORT = process.env.PORT || 8080
 const app = express()
@@ -18,6 +19,8 @@ app.use(cookieParser())
 
 //Testroute freie Slots
 app.use('/api/terminbuchung', terminRouter);
+
+app.use('/api/terminbuchung', buchungsRouter); 
 
 //Übersichts-Route klassisch ohne Architektur
 app.get('/api/uebersicht', async (req, res) => {

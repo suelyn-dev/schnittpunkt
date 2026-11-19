@@ -1,0 +1,28 @@
+info:
+  name: postTermin
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:8080/api/terminbuchung
+  body:
+    type: json
+    data: |-
+      {
+        "leistungId": 1,
+        "mitarbeiterId": 1,
+        "datum": "2026-11-25",
+        "uhrzeit": "14:30",
+        "vorname": "Max",
+        "nachname": "Mustermann",
+        "telefon": "01701234567",
+        "email": "max@example.com"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

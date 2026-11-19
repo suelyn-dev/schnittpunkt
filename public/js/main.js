@@ -2,10 +2,10 @@
 async function ladeUebersicht() {
   const res = await fetch("http://localhost:8080/api/uebersicht");
   const uebersicht = await res.json();
-
+  
   const tbody = document.getElementById("uebersicht");
   tbody.innerHTML = "";
-
+  
   uebersicht.forEach(item => {
     const row = document.createElement("tr");
     row.innerHTML = `
@@ -14,11 +14,13 @@ async function ladeUebersicht() {
       <td>${item.PREIS}</td>
       <td>${item.PERSONEN}</td>
     `;
-
+    
     row.addEventListener("click", () => ladeMitarbeiter(item.leistung_id));
     tbody.appendChild(row);
   });
 }
+
+ladeUebersicht();
 
 // Mitarbeiter-Buttons laden
 async function ladeMitarbeiter(leistungId) {
@@ -54,7 +56,7 @@ async function ladeMitarbeiter(leistungId) {
   });
 }
 
-// Verfügbare Tage 
+// Verfügbare Tage laden
 async function ladeTage(leistungId, mitarbeiterId, mitarbeiterName) {
   const res = await fetch(`http://localhost:8080/api/terminbuchung?leistungId=${leistungId}&mitarbeiterId=${mitarbeiterId}`);
   const termine = await res.json();
@@ -69,13 +71,13 @@ async function ladeTage(leistungId, mitarbeiterId, mitarbeiterName) {
     btn.className = "t-button";
     btn.textContent = datum;
 
-    btn.addEventListener("click", () => zeigeUhrzeiten(termine, datum, mitarbeiterName));
+    btn.addEventListener("click", () => zeigeUhrzeiten(termine, datum, mitarbeiterName, leistungId, mitarbeiterId));
     container.appendChild(btn);
   });
 }
 
-// Uhrzeiten 
-function zeigeUhrzeiten(termine, gewaehlterTag, mitarbeiterName) {
+// Uhrzeiten anzeigen
+function zeigeUhrzeiten(termine, gewaehlterTag, mitarbeiterName, leistungId, mitarbeiterId) {
   const container = document.getElementById("freeSlots");
   container.innerHTML = `<h3>Freie Zeiten am ${gewaehlterTag} (${mitarbeiterName}):</h3>`;
 
@@ -86,12 +88,15 @@ function zeigeUhrzeiten(termine, gewaehlterTag, mitarbeiterName) {
       const btn = document.createElement("button");
       btn.className = "t-button";
       btn.textContent = uhrzeit;
-      if (uhrzeit.includes("belegt")) {
+
+      const uhrzeitSauber = uhrzeit.replace(" Uhr", "").trim();
+      const slotZeit = new Date(`${gewaehlterTag}T${uhrzeitSauber}`);
+
+      if (uhrzeit.includes("belegt") || slotZeit <= new Date()) {
         btn.disabled = true;
       } else {
-        // Klick auf freie Uhrzeit -> öffnet das vorausgefüllte Formular
         btn.addEventListener("click", () => {
-          zeigeBuchungsformular(t.mitarbeiter, gewaehlterTag, uhrzeit);
+          zeigeBuchungsformular(t.mitarbeiter, gewaehlterTag, uhrzeit, leistungId, mitarbeiterId);
         });
       }
       container.appendChild(btn);
@@ -100,30 +105,31 @@ function zeigeUhrzeiten(termine, gewaehlterTag, mitarbeiterName) {
 }
 
 // Buchungsformular anzeigen & vorausfüllen
-function zeigeBuchungsformular(mitarbeiterName, datum, uhrzeit) {
+function zeigeBuchungsformular(mitarbeiterName, datum, uhrzeit, leistungId, mitarbeiterId) {
   const container = document.getElementById("freeSlots");
   container.innerHTML = "<h3>Termin buchen:</h3>";
 
   const booking = document.createElement("form");
 
   booking.innerHTML = `
-    <p>Mitarbeiter:<input type="text" name="mitarbeiter" value="${mitarbeiterName}" readonly></p>
-    <p> Datum:<input type="text" name="datum" value="${datum}" readonly></p>
-    <p>Uhrzeit:<input type="text" name="uhrzeit" value="${uhrzeit}" readonly></p>
+    <p>Mitarbeiter: <input type="text" name="mitarbeiter" value="${mitarbeiterName}" readonly></p>
+    <p>Datum: <input type="text" name="datum" value="${datum}" readonly></p>
+    <p>Uhrzeit: <input type="text" name="uhrzeit" value="${uhrzeit}" readonly></p>
 
-    <p>Vorname:<input type="text" name="vorname" placeholder="Vorname *" required></p>
-    <p>Nachname<input type="text" name="nachname" placeholder="Nachname *" required></p>
-    <p>Telefonnummer<input type="tel" name="telefon" placeholder="Telefonnummer *" required></p>
-    <p>E-Mail<input type="email" name="email" placeholder="E-Mail (optional)"></p>
+    <p>Vorname: <input type="text" name="vorname" placeholder="Vorname *" required></p>
+    <p>Nachname: <input type="text" name="nachname" placeholder="Nachname *" required></p>
+    <p>Telefonnummer: <input type="tel" name="telefon" placeholder="Telefonnummer *" required></p>
+    <p>E-Mail: <input type="email" name="email" placeholder="E-Mail (optional)"></p>
 
     <button type="submit" class="t-button">Verbindlich buchen</button>
   `;
 
-  // Absenden abfangen (verhindert Neuladen der Seite)
-  booking.addEventListener("submit", (e) => {
+  booking.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const buchungsDaten = {
+    const terminDaten = {
+      leistungId: leistungId,
+      mitarbeiterId: mitarbeiterId,
       mitarbeiter: booking.mitarbeiter.value,
       datum: booking.datum.value,
       uhrzeit: booking.uhrzeit.value,
@@ -133,11 +139,82 @@ function zeigeBuchungsformular(mitarbeiterName, datum, uhrzeit) {
       email: booking.email.value
     };
 
-    console.log("Fertige Buchungsdaten:", buchungsDaten);
+    await sendTermin(terminDaten);
   });
 
   container.appendChild(booking);
 }
 
+// Termin buchen & speichern
+async function sendTermin(terminDaten) {
+  const resp = await fetch("http://localhost:8080/api/terminbuchung", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(terminDaten)
+  });
 
-ladeUebersicht();
+  if (!resp.ok) throw new Error("Termin konnte nicht angelegt werden");
+  const antwort = await resp.json();
+
+  const termine = JSON.parse(localStorage.getItem("meineTermine")) || [];
+  termine.push({
+    token: antwort.stornoToken,
+    mitarbeiter: terminDaten.mitarbeiter,
+    datum: terminDaten.datum,
+    uhrzeit: terminDaten.uhrzeit.replace(" Uhr", "").trim()
+  });
+  localStorage.setItem("meineTermine", JSON.stringify(termine));
+
+  document.getElementById("freeSlots").innerHTML = "<h3>Termin erfolgreich gebucht!</h3>";
+  zeigeMeineTermine();
+}
+
+// Termin stornieren
+async function terminAbsagen(token) {
+  const resp = await fetch(`http://localhost:8080/api/terminbuchung/storno/${token}`, {
+    method: "DELETE"
+  });
+  const daten = await resp.json();
+  alert(daten.message);
+
+  if (resp.ok) {
+    const termine = JSON.parse(localStorage.getItem("meineTermine")) || [];
+    const aktualisiert = termine.filter(termin => termin.token !== token);
+    localStorage.setItem("meineTermine", JSON.stringify(aktualisiert));
+    zeigeMeineTermine();
+  }
+}
+
+// Alle kommenden Termine anzeigen
+function zeigeMeineTermine() {
+  document.getElementById("stornoBox")?.remove();
+
+  const termine = JSON.parse(localStorage.getItem("meineTermine")) || [];
+  const aktiveTermine = termine.filter(termin => new Date(`${termin.datum}T${termin.uhrzeit}`) > new Date());
+  if (aktiveTermine.length === 0) return;
+
+  const box = document.createElement("div");
+  box.id = "stornoBox";
+  box.innerHTML = "<h3>Ihre gebuchten Termine:</h3>";
+
+  aktiveTermine.forEach(termin => {
+    const terminStart = new Date(`${termin.datum}T${termin.uhrzeit}`);
+    const stornierbar = (terminStart - new Date()) / (1000 * 60 * 60) > 24;
+
+    const btn = document.createElement("button");
+    btn.className = "t-button";
+    btn.textContent = `Termin bei ${termin.mitarbeiter} am ${termin.datum} um ${termin.uhrzeit} Uhr` + (stornierbar ? " (Klick zum Stornieren)" : "");
+
+    if (stornierbar) {
+      btn.addEventListener("click", () => terminAbsagen(termin.token));
+    } else {
+      btn.disabled = true;
+    }
+
+    box.appendChild(btn);
+  });
+
+  document.body.appendChild(box);
+}
+
+zeigeMeineTermine();
