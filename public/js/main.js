@@ -1,5 +1,6 @@
 // Übersicht anzeigen und leistung_id laden
 let gewaehlteLeistung = null;
+
 async function ladeUebersicht() {
   const res = await fetch("http://localhost:8080/api/uebersicht");
   const uebersicht = await res.json();
@@ -32,7 +33,9 @@ async function ladeMitarbeiter(leistungId) {
   const mitarbeiter = await res.json();
 
   const container = document.getElementById("freeSlots");
-  container.innerHTML = "<h3>Mitarbeiter wählen:</h3>";
+  container.innerHTML = `
+  <h2>Terminuchung:<h2>
+  <h3>1. Mitarbeiter wählen:</h3>`;
 
   // Zufallsgenerator
   const egalBtn = document.createElement("button");
@@ -58,6 +61,7 @@ async function ladeMitarbeiter(leistungId) {
     btn.addEventListener("click", () => ladeTage(leistungId, ma.mitarbeiter_id, name));
     container.appendChild(btn);
   });
+  container.scrollIntoView({ behavior: "smooth" });
 }
 
 // Verfügbare Tage laden
@@ -66,14 +70,14 @@ async function ladeTage(leistungId, mitarbeiterId, mitarbeiterName) {
   const termine = await res.json();
 
   const container = document.getElementById("freeSlots");
-  container.innerHTML = `<h3>Verfügbare Tage (${mitarbeiterName}):</h3>`;
+  container.innerHTML = `<h3>2. ${mitarbeiterName} hat an folgenden Tagen noch freie Termine:</h3>`;
 
   const verfuegbareTage = [...new Set(termine.map(t => t.datum))];
 
   verfuegbareTage.forEach(datum => {
     const btn = document.createElement("button");
     btn.className = "t-button";
-    btn.textContent = datum;
+    btn.textContent = formatiereDatumPunkt(datum);
 
     btn.addEventListener("click", () => zeigeUhrzeiten(termine, datum, mitarbeiterName, leistungId, mitarbeiterId));
     container.appendChild(btn);
@@ -83,7 +87,7 @@ async function ladeTage(leistungId, mitarbeiterId, mitarbeiterName) {
 // Uhrzeiten anzeigen
 function zeigeUhrzeiten(termine, gewaehlterTag, mitarbeiterName, leistungId, mitarbeiterId) {
   const container = document.getElementById("freeSlots");
-  container.innerHTML = `<h3>Freie Zeiten am ${gewaehlterTag} (${mitarbeiterName}):</h3>`;
+  container.innerHTML = `<h3>3. Terminslot auswählen für den ${formatiereDatumName(gewaehlterTag)} bei ${mitarbeiterName}:</h3>`;
 
   const tagesTermine = termine.filter(t => t.datum === gewaehlterTag);
 
@@ -111,14 +115,14 @@ function zeigeUhrzeiten(termine, gewaehlterTag, mitarbeiterName, leistungId, mit
 // Buchungsformular anzeigen & vorausfüllen
 function zeigeBuchungsformular(mitarbeiterName, datum, uhrzeit, leistungId, mitarbeiterId) {
   const container = document.getElementById("freeSlots");
-  container.innerHTML = "<h3>Ihr Termin:</h3>";
+  container.innerHTML = "<h3>Deine Terminbuchung:</h3>";
 
   const booking = document.createElement("form");
 
   booking.innerHTML = `
     <p><b>${gewaehlteLeistung.LEISTUNG}</b></p>
     <p>Mitarbeiter: <input type="text" name="mitarbeiter" value="${mitarbeiterName}" readonly></p>
-    <p>Datum: <input type="text" name="datum" value="${datum}" readonly></p>
+    <p>Datum: <input type="text" name="datum" value="${formatiereDatumPunkt(datum)}" readonly></p>
     <p>Uhrzeit: <input type="text" name="uhrzeit" value="${uhrzeit}" readonly></p>
 
     <p>Vorname: <input type="text" name="vorname" placeholder="Vorname *" required></p>
@@ -137,7 +141,7 @@ function zeigeBuchungsformular(mitarbeiterName, datum, uhrzeit, leistungId, mita
       leistungId: leistungId,
       mitarbeiterId: mitarbeiterId,
       mitarbeiter: booking.mitarbeiter.value,
-      datum: booking.datum.value,
+      datum: datum,
       uhrzeit: booking.uhrzeit.value,
       vorname: booking.vorname.value,
       nachname: booking.nachname.value,
@@ -175,6 +179,8 @@ async function sendTermin(terminDaten) {
   zeigeMeineTermine();
 }
 
+zeigeMeineTermine();
+
 // Termin stornieren
 async function terminAbsagen(token) {
   const resp = await fetch(`http://localhost:8080/api/terminbuchung/storno/${token}`, {
@@ -190,6 +196,22 @@ async function terminAbsagen(token) {
     zeigeMeineTermine();
   }
 }
+//Datum formatieren
+
+function formatiereDatumName(isoDatum) {
+  const [jahr, monat, tag] = isoDatum.split("-");
+  const datumObj = new Date(jahr, monat - 1, tag);
+  return datumObj.toLocaleDateString("de-DE", {
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  });
+}
+
+function formatiereDatumPunkt(isoDatum) {
+  const [jahr, monat, tag] = isoDatum.split("-");
+  return `${tag}.${monat}.${jahr}`;
+}
 
 // Alle kommenden Termine anzeigen
 function zeigeMeineTermine() {
@@ -201,7 +223,9 @@ function zeigeMeineTermine() {
 
   const box = document.createElement("div");
   box.id = "stornoBox";
-  box.innerHTML = "<h3>Ihre gebuchten Termine:</h3>";
+  box.innerHTML = `
+  <h3>Deine anstehenden Termine:</h3>
+  <p><em>Gebuchte Termine können bis 24h vorher storniert werden!</em></p>`;
 
   aktiveTermine.forEach(termin => {
     const terminStart = new Date(`${termin.datum}T${termin.uhrzeit}`);
@@ -209,7 +233,7 @@ function zeigeMeineTermine() {
 
     const btn = document.createElement("button");
     btn.className = "t-button";
-    btn.textContent = `Termin bei ${termin.mitarbeiter} am ${termin.datum} um ${termin.uhrzeit} Uhr` + (stornierbar ? " (Klick zum Stornieren)" : "");
+    btn.textContent = `Termin bei ${termin.mitarbeiter} am ${formatiereDatumName(termin.datum)} um ${termin.uhrzeit} Uhr` + (stornierbar ? " (Klick zum Stornieren)" : "");
 
     if (stornierbar) {
       btn.addEventListener("click", () => terminAbsagen(termin.token));
@@ -220,7 +244,5 @@ function zeigeMeineTermine() {
     box.appendChild(btn);
   });
 
-  document.body.appendChild(box);
+  document.getElementById("meineTermine").appendChild(box);
 }
-
-zeigeMeineTermine();

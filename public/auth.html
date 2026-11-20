@@ -5,25 +5,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Schnittpunkt - Passwortbereich</title>
-    <link rel="icon" type="image/svg+xml"
-        href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJz48Y2lyY2xlIGN4PSc1MCcgY3k9JzUwJyByPSc0NScgZmlsbD0nI2U2MDAwMCcvPjwvc3ZnPg==">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJz48Y2lyY2xlIGN4PSc1MCcgY3k9JzUwJyByPSc0MCcgZmlsbD0nI2U2YjhjNycgc3Ryb2tlPScjNmQzYjVlJyBzdHJva2Utd2lkdGg9JzEwJy8+PC9zdmc+">
     <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/style.css">
     <script src="js/auth.js" defer></script>
 </head>
 
 <body>
-    <h1>Salon Schnittpunkt - Mitarbeiterbereich</h1>
-    <p>Hier das Passwort eingeben:</p>
-    <form action="#">
-        <div class="passwort-behaelter">
-            <input name="passwort" id="passwort" type="password" class="passwort-feld" placeholder="Passwort">
-            <a role="button" class="passwort-button">
-                <span class="passwort-anzeigen-icon">◉</span>
-                <span class="passwort-verstecken-icon">⊘</span>
-            </a>
+    <header>
+        <nav>
+            <img src="img/logo.png" alt="Logo-Schnittpunkt">
+            <a href="/index.html">Startseite</a>
+            <a href="#kontakt">Kontakt</a>
+            <a href="auth.html">Mitarbeiterbereich</a>
+        </nav>
+    </header>
+    <main>
+        <h1>Salon Schnittpunkt: Mitarbeiterbereich</h1>
+        <p>Bitte Passwort eingeben:</p>
+        <form action="#">
+            <div class="passwort-behaelter">
+                <input name="passwort" id="passwort" type="password" class="passwort-feld" placeholder="Passwort">
+                <a role="button" class="passwort-button">
+                    <span class="passwort-anzeigen-icon">◉</span>
+                    <span class="passwort-verstecken-icon">⊘</span>
+                </a>
+            </div>
+            <button type="submit">Einloggen</button>
+        </form>
+    </main>
+    <footer>
+        <div id="kontakt">
+            <h3>Kontakt</h3>
+            <address>
+                <strong>Sabine Kowalski</strong><br>
+                Schnittpunktstraße 1<br>
+                10243 Berlin<br><br>
+                Telefon: <a href="tel:+493012345678">+49 30 12345678</a><br>
+                E-Mail: <a href="mailto:hallo@schnittpunkt.de">hallo@schnittpunkt.de</a>
         </div>
-        <button type="submit">Einloggen</button>
-    </form>
+        <div>
+            <img src="img/schere-footer.svg" alt="Schere" width="40">
+        </div>
+        </address>
+    </footer>
 </body>
 
 </html>

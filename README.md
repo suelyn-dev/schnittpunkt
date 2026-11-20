@@ -96,3 +96,4 @@ Die ANwendung wurde auf mehreren Ebenen getestet
 
 ## Anmerkungen:
 * Angebote können nur gelöscht werden, wenn es keinen Termin dafür gibt --> ggf. später noch einbauen, dass Termine, die diese Leistung enthalten, angezeigt werden
+* Feiertage werden aktuell noch nicht berücksichtig und sind im System buchbar

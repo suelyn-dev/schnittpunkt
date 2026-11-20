@@ -4,22 +4,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJz48Y2lyY2xlIGN4PSc1MCcgY3k9JzUwJyByPSc0NScgZmlsbD0nI2U2MDAwMCcvPjwvc3ZnPg=="> <!-- Flavicon KI erstellt :) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJz48Y2lyY2xlIGN4PSc1MCcgY3k9JzUwJyByPSc0MCcgZmlsbD0nI2U2YjhjNycgc3Ryb2tlPScjNmQzYjVlJyBzdHJva2Utd2lkdGg9JzEwJy8+PC9zdmc+">
+    <!-- Flavicon KI erstellt :) -->
     <script src="js/main.js" type="module" defer></script>
+    <link rel="stylesheet" href="css/style.css">
     <title>Schnittpunkt</title>
 </head>
 
 <body>
     <header>
-        <nav><a href="auth.html">Mitarbeiterbereich</a></nav>
+        <nav>
+            <img src="img/logo.png" alt="Logo-Schnittpunkt">
+            <a href="#">Startseite</a>
+            <a href="#meineTermine">Meine Termine</a>
+            <a href="#kontakt">Kontakt</a>
+            <a href="auth.html">Mitarbeiterbereich</a>
+        </nav>
     </header>
-    <h1>Friseursalon Schnittpunkt</h1>
-    <h2>Übersicht der Leistungen</h2>
-    <section id="uebersicht"></section>
-    <h2> Online-Terminbuchung</h2>
-    <section id="freeSlots"></section>
+    <main>
+        <h1>Friseursalon Schnittpunkt</h1>
+        <h2><em>Unser Angebot</em></h2>
+        <table>
+            <tbody id="uebersicht"></tbody>
+        </table>
+        <p><em>Um einen exklusiven Termin zu buchen, klicke auf eine der oben genannten Leistungen. Du kannst Termine
+                bis 2h im Voraus buchen.</em></p>
+        <section id="freeSlots"></section>
+        <section id="meineTermine"></section>
+    </main>
+    <footer>
+        <div id="kontakt">
+            <h3>Kontakt</h3>
+            <address>
+                <strong>Sabine Kowalski</strong><br>
+                Schnittpunktstraße 1<br>
+                10243 Berlin<br><br>
+                Telefon: <a href="tel:+493012345678">+49 30 12345678</a><br>
+                E-Mail: <a href="mailto:hallo@schnittpunkt.de">hallo@schnittpunkt.de</a>
+        </div>
+        <div>
+            <img src="img/schere-footer.svg" alt="Schere" width="40">
+        </div>
+        </address>
+    </footer>
 
 </body>
 
 </html>
-

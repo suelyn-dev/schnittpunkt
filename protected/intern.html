@@ -5,26 +5,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml"
-        href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJz48Y2lyY2xlIGN4PSc1MCcgY3k9JzUwJyByPSc0NScgZmlsbD0nI2U2MDAwMCcvPjwvc3ZnPg==">
+        href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJz48Y2lyY2xlIGN4PSc1MCcgY3k9JzUwJyByPSc0MCcgZmlsbD0nI2U2YjhjNycgc3Ryb2tlPScjNmQzYjVlJyBzdHJva2Utd2lkdGg9JzEwJy8+PC9zdmc+">
+    <link rel="stylesheet" href="/css/style.css">
     <script src="js/intern.js" defer></script>
     <title>Schnittpunkt - Mitarbeiter</title>
 </head>
 
-<body>
-    <h1>Mitarbeiteransicht</h1>
-    <h2>Tagesübersicht</h2>
-    <div id="tagesplan"></div>
-    <h2>Unser Angebot</h2>
-    <section id="leistungen"></section>
-    <h2>Neue Leistung</h2>
-    <div id="neu">
-        <label>Leistung: <input type="text"></label>
-        <label>Dauer (Min): <input type="text"></label>
-        <label>Preis (€): <input type="text"></label>
-        <label>Mitarbeiter (Vorname): <input type="text"></label>
-        <button id="btn-neu">Hinzufügen</button>
-    </div>
-
+<body id="intern">
+    <header>
+        <nav>
+            <img src="img/logo.png" alt="Logo-Schnittpunkt">
+            <a href="/index.html">Startseite</a>
+            <a href="#kontakt">Kontakt</a>
+            <a href="auth.html">Mitarbeiterbereich</a>
+        </nav>
+    </header>
+    <main>
+        <h1>Mitarbeiteransicht</h1>
+        <h2>Tagesübersicht</h2>
+        <div id="tagesplan"></div>
+        <h2>Unser Angebot</h2>
+        <section id="leistungen"></section>
+        <h2>Neue Leistung</h2>
+        <div id="neu">
+            <label>Leistung: <input type="text"></label>
+            <label>Dauer (Min): <input type="text"></label>
+            <label>Preis (€): <input type="text"></label>
+            <label>Mitarbeiter (Vorname): <input type="text"></label>
+            <button id="btn-neu">Hinzufügen</button>
+        </div>
+    </main>
+    <footer>
+        <div id="kontakt">
+            <h3>Kontakt</h3>
+            <address>
+                <strong>Sabine Kowalski</strong><br>
+                Schnittpunktstraße 1<br>
+                10243 Berlin<br><br>
+                Telefon: <a href="tel:+493012345678">+49 30 12345678</a><br>
+                E-Mail: <a href="mailto:hallo@schnittpunkt.de">hallo@schnittpunkt.de</a>
+        </div>
+        <div>
+            <img src="img/schere-footer.svg" alt="Schere" width="40">
+        </div>
+        </address>
+    </footer>
 </body>
 
 </html>
