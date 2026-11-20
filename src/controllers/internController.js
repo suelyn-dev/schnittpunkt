@@ -1,4 +1,4 @@
-import { holeTagesansicht, holeAlleTermine, loescheTermin, terminErledigt, noShowTermin, aendereLeistung, insertLeistungService } from "../services/internService.js";
+import { holeTagesansicht, holeAlleTermine, loescheTermin, terminErledigt, noShowTermin, aendereLeistung, insertLeistungService, deleteLeistungService } from "../services/internService.js";
 
 export async function getHeute(req, res) {
   res.json(await holeTagesansicht());
@@ -44,5 +44,16 @@ export async function postLeistung(req, res) {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: error.message });
+  }
+}
+
+export async function deleteLeistungController(req, res) {
+  try {
+    const ok = await deleteLeistungService(req.params.leistungId);
+    if (!ok) return res.status(404).json({ error: "Leistung nicht gefunden" });
+    res.json({ message: "Leistung erfolgreich gelöscht" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Kann nicht gelöscht werden (evtl. noch Termine gebucht)" });
   }
 }

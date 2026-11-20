@@ -5,7 +5,8 @@ import {
   erledigt,
   noShow,
   updateLeistung,
-  insertLeistung
+  insertLeistung,
+  deleteLeistung
 } from "../repositories/internRepository.js"; 
 
 export async function holeTagesansicht() {
@@ -34,4 +35,8 @@ export async function aendereLeistung(leistungId, daten) {
 
 export async function insertLeistungService(daten) {
   return await insertLeistung(daten);
+}
+
+export async function deleteLeistungService(leistungId) {
+  return await deleteLeistung(leistungId);
 }

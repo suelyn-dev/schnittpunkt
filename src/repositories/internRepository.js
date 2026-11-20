@@ -121,3 +121,18 @@ export async function insertLeistung(daten) {
 
   return leistungId;
 }
+
+export async function deleteLeistung(leistungId) {
+  //Verknüpfungen in mitarbeiter_leistung löschen
+  await pool.query(
+    `DELETE FROM mitarbeiter_leistung WHERE leistung_id = ?`,
+    [leistungId]
+  );
+
+  //Leistung löschen
+  const [result] = await pool.query(
+    `DELETE FROM leistung WHERE leistung_id = ?`,
+    [leistungId]
+  );
+  return result.affectedRows > 0;
+}

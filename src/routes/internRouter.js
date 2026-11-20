@@ -1,5 +1,5 @@
 import express from "express";
-import { getHeute, getAlle, deleteTerminIntern, noShowTerminIntern, erledigtTerminIntern, putLeistung, postLeistung  } from "../controllers/internController.js";
+import { getHeute, getAlle, deleteTerminIntern, noShowTerminIntern, erledigtTerminIntern, putLeistung, postLeistung, deleteLeistungController  } from "../controllers/internController.js";
 
 export const router = express.Router();
 
@@ -10,3 +10,5 @@ router.patch("/termine/:terminId/noshow", noShowTerminIntern);
 router.patch("/termine/:terminId/erledigt", erledigtTerminIntern);
 router.put("/uebersicht/:leistungId", putLeistung);
 router.post("/uebersicht", postLeistung);
+router.delete("/uebersicht/:leistungId", deleteLeistungController);
+

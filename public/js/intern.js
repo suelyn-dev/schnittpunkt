@@ -99,11 +99,13 @@ async function ladeUebersicht() {
   uebersicht.forEach(item => {
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td contenteditable="true" data-feld="LEISTUNG">${item.LEISTUNG}</td>
-      <td contenteditable="true" data-feld="DAUER">${item.DAUER}</td>
-      <td contenteditable="true" data-feld="PREIS">${item.PREIS}</td>
+      <td contenteditable="true" data-feld="LEISTUNG" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}">${item.LEISTUNG}</td>
+      <td contenteditable="true" data-feld="DAUER" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}">${item.DAUER}</td>
+      <td contenteditable="true" data-feld="PREIS" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}">${item.PREIS}</td>
       <td>${item.PERSONEN ?? ""}</td>
+      <td><button onclick="loescheLeistung(${item.leistung_id})">Löschen</button></td>
     `;
+
 
     row.addEventListener("focusout", async (e) => {
       const feld = e.target.dataset.feld;
@@ -130,6 +132,19 @@ async function ladeUebersicht() {
 
     tbody.appendChild(row);
   });
+}
+
+// Leistung löschen 
+async function loescheLeistung(leistungId) {
+  if (!confirm("Willst du diese Leistung wirklich löschen?")) return;
+
+  const res = await fetch(`http://localhost:8080/api/mitarbeiter/uebersicht/${leistungId}`, {
+    method: "DELETE"
+  });
+  const daten = await res.json();
+  alert(daten.message || daten.error);
+
+  ladeUebersicht();
 }
 
 //Neues Angebot
