@@ -1,11 +1,12 @@
 // Übersicht anzeigen und leistung_id laden
+let gewaehlteLeistung = null;
 async function ladeUebersicht() {
   const res = await fetch("http://localhost:8080/api/uebersicht");
   const uebersicht = await res.json();
-  
+
   const tbody = document.getElementById("uebersicht");
   tbody.innerHTML = "";
-  
+
   uebersicht.forEach(item => {
     const row = document.createElement("tr");
     row.innerHTML = `
@@ -14,8 +15,11 @@ async function ladeUebersicht() {
       <td>${item.PREIS}</td>
       <td>${item.PERSONEN}</td>
     `;
-    
-    row.addEventListener("click", () => ladeMitarbeiter(item.leistung_id));
+
+    row.addEventListener("click", () => {
+      gewaehlteLeistung = item;
+      ladeMitarbeiter(item.leistung_id);
+    });
     tbody.appendChild(row);
   });
 }
@@ -107,11 +111,12 @@ function zeigeUhrzeiten(termine, gewaehlterTag, mitarbeiterName, leistungId, mit
 // Buchungsformular anzeigen & vorausfüllen
 function zeigeBuchungsformular(mitarbeiterName, datum, uhrzeit, leistungId, mitarbeiterId) {
   const container = document.getElementById("freeSlots");
-  container.innerHTML = "<h3>Termin buchen:</h3>";
+  container.innerHTML = "<h3>Ihr Termin:</h3>";
 
   const booking = document.createElement("form");
 
   booking.innerHTML = `
+    <p><b>${gewaehlteLeistung.LEISTUNG}</b></p>
     <p>Mitarbeiter: <input type="text" name="mitarbeiter" value="${mitarbeiterName}" readonly></p>
     <p>Datum: <input type="text" name="datum" value="${datum}" readonly></p>
     <p>Uhrzeit: <input type="text" name="uhrzeit" value="${uhrzeit}" readonly></p>
@@ -120,6 +125,7 @@ function zeigeBuchungsformular(mitarbeiterName, datum, uhrzeit, leistungId, mita
     <p>Nachname: <input type="text" name="nachname" placeholder="Nachname *" required></p>
     <p>Telefonnummer: <input type="tel" name="telefon" placeholder="Telefonnummer *" required></p>
     <p>E-Mail: <input type="email" name="email" placeholder="E-Mail (optional)"></p>
+    <p><b>Preis: ${gewaehlteLeistung.PREIS}</b></p>
 
     <button type="submit" class="t-button">Verbindlich buchen</button>
   `;
