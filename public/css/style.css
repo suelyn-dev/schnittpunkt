@@ -1,7 +1,7 @@
 body {
-  font-family: Georgia, serif; 
-  background-color: #f9f6f7;   
-  color: #362831;            
+  font-family: Georgia, serif;
+  background-color: #f9f6f7;
+  color: #362831;
   margin: 0;
   padding: 25px;
   line-height: 1.7;
@@ -19,8 +19,9 @@ body {
 
 nav {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
   padding-bottom: 20px;
   border-bottom: 1px solid #dfd3d8;
   font-family: Arial, sans-serif;
@@ -46,17 +47,16 @@ nav a:hover {
 h1 {
   font-weight: normal;
   font-size: 32px;
-  color: #4a3242;              
+  color: #4a3242;
   margin-top: 45px;
   letter-spacing: 0.5px;
 }
 
 h2, h3 {
   font-weight: normal;
-  color: #9e6b78;              
+  color: #9e6b78;
   margin-top: 35px;
 }
-
 
 table {
   width: 100%;
@@ -76,24 +76,32 @@ tr:hover {
   cursor: pointer;
 }
 
-.t-button {
-  width: 100%;
-  padding: 14px 22px;
-  margin-bottom: 10px;
+/* Buttons */
+button {
+  padding: 5px 12px;
+  margin-left: 6px;
   background-color: transparent;
   color: #4a3242;
   border: 1px solid #4a3242;
-  border-radius: 0;            
+  border-radius: 0;
   font-family: Arial, sans-serif;
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
+  font-size: 12px;
   cursor: pointer;
 }
 
-.t-button:hover {
+button:hover:not(:disabled) {
   background-color: #4a3242;
   color: #f9f6f7;
+}
+
+/* Auswahl-Buttons (index.html) */
+.t-button {
+  width: 100%;
+  padding: 14px 22px;
+  margin: 0 0 10px 0;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
 }
 
 .t-button:disabled {
@@ -102,7 +110,28 @@ tr:hover {
   cursor: not-allowed;
 }
 
-form input {
+/* Buttons (Absenden & Neu anlegen) */
+button[type="submit"],
+#btn-neu {
+  padding: 12px 24px;
+  margin: 5px 0 0 0;
+  background-color: #4a3242;
+  color: #f9f6f7;
+}
+
+button[type="submit"]:hover,
+#btn-neu:hover {
+  background-color: #9e6b78;
+  border-color: #9e6b78;
+}
+
+#neu label {
+  display: block;
+  margin-bottom: 12px;
+}
+
+form input,
+#neu input {
   width: 100%;
   padding: 12px;
   margin-top: 6px;
@@ -114,6 +143,64 @@ form input {
   box-sizing: border-box;
 }
 
+/* Kalenderspalten (Mitarbeiter-Tagesansicht) */
+.spalte {
+  background-color: #ffffff;
+  border: 1px solid #e6dce0;
+  border-top: 3px solid #4a3242;
+  padding: 0 18px;
+  margin-bottom: 15px;
+}
+
+.spalte h2 {
+  margin: 0;
+  padding: 16px 0 12px 0;
+  border-bottom: 1px solid #9e6b78;
+  color: #4a3242;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+}
+
+.spalte p {
+  margin: 0;
+  padding: 14px 0;
+  border-bottom: 1px solid #ece3e7;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.spalte p:last-child {
+  border-bottom: none;
+}
+
+.spalte button {
+  margin: 10px 4px 0 0;
+  padding: 4px 10px;
+  font-size: 11px;
+  border-color: #cbb6c0;
+}
+
+/* Alle Termine im Überblick (intern) */
+#tagesplan > p {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin: 0;
+  padding: 14px 10px;
+  border-bottom: 1px solid #dfd3d8;
+}
+
+#tagesplan > p:hover {
+  background-color: #f4ecef;
+}
+
+#tagesplan > p button {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* Footer */
 footer {
   margin-top: 80px;
   padding-top: 40px;
@@ -133,59 +220,6 @@ footer a {
   border-bottom: 1px solid #9e6b78;
 }
 
-/*Submit*/ 
-button[type="submit"] {
-  padding: 12px 24px;
-  background-color: #4a3242;
-  color: white;
-  border: none;
-  cursor: pointer;
-  margin-top: 5px;
-}
-
-button[type="submit"]:hover {
-  background-color: #9e6b78;
-}
-
-/*MA-Buttons*/
-button {
-  padding: 5px 12px;
-  margin-left: 6px;
-  background-color: transparent;
-  color: #4a3242;
-  border: 1px solid #4a3242;
-  border-radius: 0;
-  font-family: Arial, sans-serif;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #4a3242;
-  color: #f9f6f7;
-}
-
-/*Neu anlegen*/
-#neu label {
-  display: block;
-  margin-bottom: 12px;
-}
-
-#neu input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #c5b4bc;
-  box-sizing: border-box;
-}
-
-#btn-neu {
-  margin-left: 0;
-  padding: 10px 20px;
-  background-color: #4a3242;
-  color: white;
-}
-
-
 /* Ab 600px Breite */
 
 @media (min-width: 600px) {
@@ -203,5 +237,14 @@ button:hover {
     width: auto;
     margin-right: 12px;
   }
-}
 
+  #kalender {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .spalte {
+    flex: 1;
+  }
+}

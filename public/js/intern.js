@@ -11,9 +11,9 @@ async function ladeTagesplan() {
   if (mitarbeiterNamen.length === 0) {
     container.innerHTML += "<p>Heute liegen keine Termine vor.</p>";
   }
-
+  container.innerHTML += `<div id="kalender">`;
   mitarbeiterNamen.forEach(name => {
-    container.innerHTML += `<h2>${name}</h2>`;
+    let spalteHTML = `<div class="spalte"><h2>${name}</h2>`;
 
     const meineTermine = heuteTermine.filter(t => t.mitarbeiter === name);
 
@@ -21,15 +21,19 @@ async function ladeTagesplan() {
       const start = new Date(t.startzeit).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
       const ende = new Date(t.endzeit).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
 
-      container.innerHTML += `
+      spalteHTML += `
         <p>
-          ${start} - ${ende} Uhr | ${t.leistung} | ${t.kunde_vorname} ${t.kunde_nachname} (${t.telefon})
+          <b>${start} - ${ende} Uhr</b><br>
+          <em><b>${t.leistung}</b></em><br>
+          ${t.kunde_vorname} ${t.kunde_nachname}, Tel: ${t.telefon}<br>
           <button onclick="storniere(${t.termin_id})">Stornieren</button>
           <button onclick="noShow(${t.termin_id})">No-Show</button>
           <button onclick="erledigt(${t.termin_id})">Erledigt</button>
         </p>
       `;
     });
+    spalteHTML += `</div>`; 
+    container.querySelector("#kalender").innerHTML += spalteHTML;
   });
 
   // Alle Termine mit Stornooption
