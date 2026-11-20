@@ -29,8 +29,10 @@ router.post("/", async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({ message: "Falsches Passwort!" });
     }
-
+  // Cookie setzen, wenn Mitarbeiter eingeloggt ist
+    res.cookie("ma_auth", "true", { httpOnly: true });
     res.status(200).json({ message: "Login erfolgreich!" });
+
   } catch (err) {
     console.error("Fehler beim Login:", err);
     res.status(500).json({ message: "Serverfehler beim Login." });

@@ -2,6 +2,7 @@ import express from 'express'
 import cookieParser from 'cookie-parser'
 import 'dotenv/config'
 import { pool } from './src/utilities/db.js'
+import path from 'path'
 
 import { router as terminRouter } from './src/routes/terminRoute.js';
 import { router as buchungsRouter } from './src/routes/buchungsRouter.js';
@@ -11,13 +12,25 @@ import { router as mitarbeiterRouter } from "./src/routes/internRouter.js";
 const PORT = process.env.PORT || 8080
 const app = express()
 
+app.use(express.json()) 
+app.use(cookieParser()) 
+
+// Middleware: Prüft auf das Login-Cookie aus authBackend.js
+function checkAuth(req, res, next) {
+  if (req.cookies.ma_auth === "true") {
+    return next();
+  }
+  return res.redirect('/auth.html');
+}
+
+// intern.html nur noch für eingeloggte Mitarbeiter
+app.get(['/intern', '/intern.html'], checkAuth, (req, res) => {
+  res.sendFile(path.resolve('protected/intern.html'));
+});
 
 app.use(express.static("./public", {
   extensions: ['html']
 }));
-
-app.use(express.json()) 
-app.use(cookieParser()) 
 
 //Testroute freie Slots
 app.use('/api/terminbuchung', terminRouter);
@@ -47,7 +60,7 @@ app.get('/api/uebersicht', async (req, res) => {
 //PasswortCheck
 app.use("/api/passwortcheck", authRouter);
 
-//Mitarbeiterbereich
-app.use("/api/mitarbeiter", mitarbeiterRouter);
+//Mitarbeiterbereich mit checkAuth
+app.use("/api/mitarbeiter", checkAuth, mitarbeiterRouter);
   
 app.listen(PORT, () => console.log("Der Salon geht an den Start auf Port: ", PORT))
