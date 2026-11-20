@@ -51,6 +51,7 @@ Daraus wurde folgendes ER-Modell entwickelt:
 npm init -y
 npm install express mysql2 cors dotenv cookie-parser bcrypt
 npm install -D nodemon
+npm i -D jest
 ```
 
 **Verwendete Node.js Built-in-Module:**
@@ -61,10 +62,37 @@ npm install -D nodemon
 {
   "type": "module",
   "scripts": {
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   }
 }
 ```
+## Validierung
+Die ANwendung wurde auf mehreren Ebenen getestet
+| Testart | Methode | Umsetzung |
+| :--- | :--- | :--- |
+| **Unit-Tests**  | **Automatisiert mit Jest** (`White-Box-Test`) | Prüfung der Service-Schicht (`buchungsService.js` und `internService.js`) ohne Datenbank. |
+| **Integrationstests** | **Manuell mit Bruno** (`Black-Box-Test`) | Prüfung ausgewählter REST-Schnittstellen inkl. Router, Controller, Service, Repository und Datenbank (siehe yml-Dateien). |
+| **Oberflächen- & Systemtest** | **Manuell im Browser** (`Black-Box-Test`) | Prüfung der kompletten Nutzerabläufe (Terminbuchung, Stornierung (Nutzer und Mitarbeiter) und Verwaltung der Angebote). |
 
-### Anmerkungen:
+Übersicht der durchgeführten Testfälle (5 Tests)
+
+### Terminbuchung
+
+| Testfall | Geprüfte Funktion | Testdaten | Was wird geprüft? | Erwartetes Ergebnis |
+| :--- | :--- | :--- | :--- | :--- |
+| **TC-01** | `buchungErstellen(...)` | Gültige Buchungsdaten inkl. `"14:30 Uhr"` | Ob der Termin angelegt und ein eindeutiges `stornoToken` erzeugt wird. | `terminId` ist `42` und `stornoToken` ist definiert |
+| **TC-02** | `terminStornieren(...)` | Storno-Token (`"abc-123"`) | Ob eine Stornierung über das Token korrekt verarbeitet wird. | Rückgabe `true` |
+
+### Mitarbeiterbereich
+
+| Testfall | Geprüfte Funktion | Testdaten | Was wird geprüft? | Erwartetes Ergebnis |
+| :--- | :--- | :--- | :--- | :--- |
+| **TC-03** | `aendereLeistung(1, ...)` | Gültige ID & Bezeichnung | Ob bestehende Angebote aktualisiert werden können. | Rückgabe `true` |
+| **TC-04** | `insertLeistungService(...)` | Neue Leistung (`"Balayage"`) | Ob ein neues Angebot angelegt und die neue ID zurückgegeben wird. | Rückgabe der neuen ID (`7`) |
+| **TC-05** | `deleteLeistungService(3)` | Gültige Leistungs-ID (`3`) | Ob ein bestehendes Angebot gelöscht werden kann. | Rückgabe `true` |
+
+***Fazit:*** Alles läuft!
+
+## Anmerkungen:
 * Angebote können nur gelöscht werden, wenn es keinen Termin dafür gibt --> ggf. später noch einbauen, dass Termine, die diese Leistung enthalten, angezeigt werden
