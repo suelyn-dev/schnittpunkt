@@ -97,3 +97,9 @@ Die ANwendung wurde auf mehreren Ebenen getestet
 ## Anmerkungen:
 * Angebote können nur gelöscht werden, wenn es keinen Termin dafür gibt --> ggf. später noch einbauen, dass Termine, die diese Leistung enthalten, angezeigt werden
 * Feiertage werden aktuell noch nicht berücksichtig und sind im System buchbar
+* stornoToken werden clientseitig im localStorage gespeichert. Dadurch können gebuchte Termine direkt über die Benutzeroberfläche bis 24 Stunden vor Beginn storniert werden. (Nachteil: Online-Stornierung an dasselbe Gerät und denselben Browser gebunden, dies wurde in Kauf genommen um auf die Anbindung eines externen Mail-Servers vorerst verzichten zu könne )
+* Auf eine eigene Storno-Unterseite für Kunden wurde bewusst verzichtet, da auf der Startseite ausreichend Platz vorhanden war (einfache Nutzerführung und schlanker Code).
+* Responsive Design (Mobile First): Das CSS-Layout wurde bewusst nach dem Mobile-First-Prinzip umgesetzt, da Terminbuchungen überwiegend mobil erfolgen.
+* Datenbankschema (EER-Modell): Die Datenbank wurde während der Entwicklung iterativ erweitert. Die finale Struktur ist im über MySQL Workbench automatisch generierten EER-Modell abgebildet:
+![EER-Modell Salon Schnittpunkt](EER_Modell.png)
+
