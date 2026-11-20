@@ -1,6 +1,6 @@
 import { pool } from '../utilities/db.js';
 
-// Nur Termine von HEUTE (für die Spaltenansicht pro Mitarbeiter)
+// Tagesansicht
 export async function getTagesansicht() {
   const [rows] = await pool.query(`
     SELECT 
@@ -72,4 +72,52 @@ export async function noShow(termin_id) {
     [termin_id]
   );
   return stornoRes.affectedRows > 0;
+}
+
+// Angebot bearbeiten
+export async function updateLeistung(leistungId, daten) {
+  const dauerZahl = parseInt(String(daten.DAUER).replace(" Min", "").trim(), 10);
+  const preisZahl = parseFloat(String(daten.PREIS).replace(" €", "").replace(",", ".").trim());
+
+  const [result] = await pool.query(
+    `UPDATE leistung 
+     SET bezeichnung = ?, dauer = ?, preis = ? 
+     WHERE leistung_id = ?`,
+    [daten.LEISTUNG, dauerZahl, preisZahl, leistungId]
+  );
+  return result.affectedRows > 0;
+}
+
+//Neues Angebot
+export async function insertLeistung(daten) {
+  const [leistungRes] = await pool.query(
+    `INSERT INTO leistung (bezeichnung, dauer, preis) VALUES (?, ?, ?)`,
+    [daten.LEISTUNG, daten.DAUER, daten.PREIS]
+  );
+  const leistungId = leistungRes.insertId;
+
+  if (!daten.VORNAME) return leistungId;
+
+  const [rows] = await pool.query(
+    `SELECT mitarbeiter_id FROM mitarbeiter WHERE vorname = ?`,
+    [daten.VORNAME]
+  );
+
+  let mitarbeiterId;
+  if (rows.length > 0) {
+    mitarbeiterId = rows[0].mitarbeiter_id;
+  } else {
+    const [maRes] = await pool.query(
+      `INSERT INTO mitarbeiter (vorname) VALUES (?)`,
+      [daten.VORNAME]
+    );
+    mitarbeiterId = maRes.insertId;
+  }
+
+  await pool.query(
+    `INSERT INTO mitarbeiter_leistung (mitarbeiter_id, leistung_id) VALUES (?, ?)`,
+    [mitarbeiterId, leistungId]
+  );
+
+  return leistungId;
 }

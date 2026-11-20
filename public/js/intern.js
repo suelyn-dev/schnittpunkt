@@ -2,7 +2,7 @@ async function ladeTagesplan() {
   const container = document.getElementById("tagesplan");
   container.innerHTML = "";
 
-  // 1. Heutige Termine pro Mitarbeiter laden
+  // Tagesansicht
   const resHeute = await fetch("http://localhost:8080/api/mitarbeiter/heute");
   const heuteTermine = await resHeute.json();
 
@@ -32,8 +32,8 @@ async function ladeTagesplan() {
     });
   });
 
-  // 2. Alle gebuchten Termine darunter laden
-  container.innerHTML += "<h1>Alle gebuchten Termine</h1>";
+  // Alle Termine mit Stornooption
+  container.innerHTML += "<h2>Alle Termine im Überblick</h2>";
 
   const resAlle = await fetch("http://localhost:8080/api/mitarbeiter/alle");
   const alleTermine = await resAlle.json();
@@ -52,7 +52,7 @@ async function ladeTagesplan() {
   });
 }
 
-// 3. Termin löschen und Seite aktualisieren
+// Termin löschen 
 async function storniere(terminId) {
   const res = await fetch(`http://localhost:8080/api/mitarbeiter/termine/${terminId}`, {
     method: "DELETE"
@@ -63,7 +63,7 @@ async function storniere(terminId) {
   ladeTagesplan();
 }
 
-// 4. Termin als No-Show markieren
+// Termin als no-show markieren
 async function noShow(terminId) {
   const res = await fetch(`http://localhost:8080/api/mitarbeiter/termine/${terminId}/noshow`, {
     method: "PATCH"
@@ -74,7 +74,7 @@ async function noShow(terminId) {
   ladeTagesplan();
 }
 
-// 5. Termin als Erledigt markieren
+// Termin als erledigt markieren
 async function erledigt(terminId) {
   const res = await fetch(`http://localhost:8080/api/mitarbeiter/termine/${terminId}/erledigt`, {
     method: "PATCH"
@@ -86,3 +86,71 @@ async function erledigt(terminId) {
 }
 
 ladeTagesplan();
+ladeUebersicht()
+
+
+// Übersicht anzeigen zum Bearbeiten
+async function ladeUebersicht() {
+  const res = await fetch("http://localhost:8080/api/uebersicht");
+  const uebersicht = await res.json();
+  const tbody = document.getElementById("leistungen");
+  tbody.innerHTML = "";
+
+  uebersicht.forEach(item => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td contenteditable="true" data-feld="LEISTUNG">${item.LEISTUNG}</td>
+      <td contenteditable="true" data-feld="DAUER">${item.DAUER}</td>
+      <td contenteditable="true" data-feld="PREIS">${item.PREIS}</td>
+      <td>${item.PERSONEN ?? ""}</td>
+    `;
+
+    row.addEventListener("focusout", async (e) => {
+      const feld = e.target.dataset.feld;
+      if (!feld) return; // Falls auf Mitarbeiter geklickt wurde
+
+      const neuerWert = e.target.textContent.trim();
+      if (neuerWert == item[feld]) return;
+
+      if (!confirm("Willst du das wirklich ändern?")) {
+        e.target.textContent = item[feld];
+        return;
+      }
+
+      item[feld] = neuerWert;
+
+      await fetch(`http://localhost:8080/api/mitarbeiter/uebersicht/${item.leistung_id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(item)
+      });
+
+      ladeUebersicht(); // nue laden, wegen formatierung
+    });
+
+    tbody.appendChild(row);
+  });
+}
+
+//Neues Angebot
+document.getElementById("btn-neu").addEventListener("click", async () => {
+  const inputs = document.querySelectorAll("#neu input");
+
+  await fetch("http://localhost:8080/api/mitarbeiter/uebersicht", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      LEISTUNG: inputs.item(0).value.trim(),
+      DAUER: inputs.item(1).value.trim(),
+      PREIS: inputs.item(2).value.replace(",", ".").trim(),
+      VORNAME: inputs.item(3).value.trim()
+    })
+  });
+
+  inputs.forEach(input => input.value = "");
+  ladeUebersicht();
+});
+
+
+
+

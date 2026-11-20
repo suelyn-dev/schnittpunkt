@@ -1,4 +1,4 @@
-import { holeTagesansicht, holeAlleTermine, loescheTermin, terminErledigt, noShowTermin } from "../services/internService.js";
+import { holeTagesansicht, holeAlleTermine, loescheTermin, terminErledigt, noShowTermin, aendereLeistung, insertLeistungService } from "../services/internService.js";
 
 export async function getHeute(req, res) {
   res.json(await holeTagesansicht());
@@ -24,4 +24,25 @@ export async function noShowTerminIntern(req, res) {
   const ok = await noShowTermin(req.params.terminId);
   if (!ok) return res.status(404).json({ message: "Termin nicht gekommen." });
   res.json({ message: "Termin als no-show markiert!" });
+}
+
+export async function putLeistung(req, res) {
+  try {
+    const ok = await aendereLeistung(req.params.leistungId, req.body);
+    if (!ok) return res.status(404).json({ error: "Leistung nicht gefunden" });
+    res.json({ message: "Leistung erfolgreich geändert" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+}
+
+export async function postLeistung(req, res) {
+  try {
+    const id = await insertLeistungService(req.body);
+    res.status(201).json({ message: "Leistung erstellt", leistung_id: id });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
 }
